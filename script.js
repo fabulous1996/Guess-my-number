@@ -1,55 +1,81 @@
+// Permet de chosir un nombre aléatoire entre 0 et 20
 let secretNumber = Math.trunc(Math.random() * 20) + 1;
-document.querySelector('.number').textContent = secretNumber;
 
+// Le score de départ est de 20
 let score = 20;
 
+//Le meilleur score de départ est de 0
+let highscore = 0;
+
+
+// Fonction permettant d'évitant la répétition de document.querySelector('.message).textContent
+const displayMessage = function (message) {
+  document.querySelector('.message').textContent = message
+}
+
+
 document.querySelector('.check').addEventListener('click', function () {
-  const guess = Number(document.querySelector('.guess').value);
+  let guess = Number(document.querySelector('.guess').value);
 
-
-  // Lorqu'il n'y a aucun chiffre indiqué
+  // Message qui s'affiche lorsqu'il n'y a aucun chiffre indiqué
   if (!guess) {
-    document.querySelector('.message').textContent = 'No number';
-  } 
+    displayMessage('No number')
+  }
 
-  // Lorsque le joueur trouve la bonné réponse
+  // Évènements se produisant lorsque la bonne réponse est trouvée 
   else if (guess === secretNumber) {
-    document.querySelector('.message').textContent = 'Correct number !';
+    displayMessage('Correct number !')
+
+    document.querySelector('.number').textContent = secretNumber;
 
     document.querySelector('body').style.backgroundColor = '#008000';
 
     document.querySelector('.number').style.width = '30rem';
 
-  } 
+    if (score > highscore) {
+      highscore = score;
 
-  // Lorque la réponse proposé est trop haute
-  else if (guess > secretNumber) {
-    if (score > 1) {
-        document.querySelector('.message').textContent = 'Too high !';
-
-    score--;
-    document.querySelector('.score').textContent = score;
-  } else {
-    document.querySelector('.message').textContent = 'You lost the game !';
-
-    document.querySelector('.score').textContent = 0;
-    
-    document.querySelector('body').style.backgroundColor = '#FF0000';
-  }
-    } 
-
-    // Lorsque la réponde proposé est trop basse
-    else if (guess < secretNumber) {
-    if (score > 1) {
-        document.querySelector('.message').textContent = 'Too low !';
-    score--;
-    document.querySelector('.score').textContent = score;
-    } else {
-        document.querySelector('.message').textContent = 'You lost the game !';
-
-        document.querySelector('.score').textContent = 0;
-
-        document.querySelector('body').style.backgroundColor = '#FF0000';
+      document.querySelector('.highscore').textContent = highscore;
     }
-  }
+
+    // Événements se produisant lorsque la réponse proposée est fausse
+  } else if (guess !== secretNumber) {
+    if (score > 1) {
+
+      // Affiche un message disant si la réponse proposéeest trop haute ou top basse 
+      displayMessage(guess > secretNumber ? 'Too high !' : 'Too low !');
+
+      // Soustrait 1 au score à chauqe mauvaise réponse proposée
+      score--;
+
+      document.querySelector('.score').textContent = score;
+    } else {
+
+      // Message affiché lorsque le score atteint zéro
+      displayMessage('You lost the game !')
+
+      document.querySelector('.score').textContent = 0;
+
+      document.querySelector('body').style.backgroundColor = '#FF0000';
+    }
+  } 
+});
+
+// Permet de recommencer une partie sans devoir rafraîchir la page 
+document.querySelector('.again').addEventListener('click', function () {
+  score = 20;
+
+  secretNumber = Math.trunc(Math.random() * 20) + 1;
+
+  displayMessage('Start guessing...');
+
+  document.querySelector('.score').textContent = score;
+
+  document.querySelector('.number').textContent = '?';
+
+  document.querySelector('body').style.backgroundColor = '#222';
+
+  document.querySelector('.guess').value = '';
+
+  document.querySelector('.number').style.width = '15rem';
 });
